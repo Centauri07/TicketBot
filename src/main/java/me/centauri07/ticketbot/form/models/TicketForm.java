@@ -1,7 +1,6 @@
 package me.centauri07.ticketbot.form.models;
 
 import me.centauri07.ticketbot.TicketBot;
-import me.centauri07.ticketbot.configuration.models.TicketModel;
 import me.centauri07.ticketbot.form.Form;
 import me.centauri07.ticketbot.form.FormField;
 import me.centauri07.ticketbot.form.FormModel;
@@ -19,12 +18,8 @@ public class TicketForm extends FormModel {
     public static List<FormField<?>> fieldsOf(String entry) {
         List<FormField<?>> fields = new ArrayList<>();
 
-        TicketModel ticket = TicketBot.getInstance().getConfiguration().model.entries.stream()
-                .filter(ticketModel -> ticketModel.name.equalsIgnoreCase(entry)).findFirst().orElse(null);
-
-        if (ticket != null) {
-            ticket.fields.forEach(field -> fields.add(new FormField<>(field.name, field.required, null, null)));
-        }
+        TicketBot.getInstance().getConfiguration().model.entries.stream()
+                .filter(ticketModel -> ticketModel.name.equalsIgnoreCase(entry)).findFirst().ifPresent(ticket -> ticket.fields.forEach(field -> fields.add(new FormField<>(field.name, field.required, null, null))));
 
         return fields;
     }

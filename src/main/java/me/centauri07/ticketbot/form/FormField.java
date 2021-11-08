@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class FormField<T> {
-    public T value;
+    private T value;
 
     public boolean chosen;
     public String name;
@@ -26,7 +26,7 @@ public class FormField<T> {
     public FormField(String name, boolean required, java.lang.reflect.Field field, Object parent) {
         if (field == null) {
             try {
-                this.field = this.getClass().getField("value");
+                this.field = this.getClass().getDeclaredField("value");
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -71,16 +71,17 @@ public class FormField<T> {
     public List<FormField<?>> subFormFields = new ArrayList<>();
     public boolean isAcknowledged = false;
 
-    public Object get() {
+    public T get() {
         try {
-            return field.get(parent);
+            return (T) field.get(parent);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void set(Object object) {
+    /*TODO clean up*/
+    public T set(Object object) {
         if (field.getType().isPrimitive() || field.getType().isAssignableFrom(String.class)) {
             try {
                 if (field.getType().isAssignableFrom(byte.class)) {
@@ -124,5 +125,7 @@ public class FormField<T> {
                 e.printStackTrace();
             }
         }
+
+        return get();
     }
 }

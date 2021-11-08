@@ -157,7 +157,13 @@ public class Form<T> {
             if (!formField.required && !formField.chosen && !formField.isAcknowledged)
                 return;
 
-            formField.set(message.getContentRaw());
+            if (formField.set(message.getContentRaw()) == null) {
+                message.getChannel().sendMessageEmbeds(
+                        EmbedUtility.error(null, "Invalid input!").build()
+                ).queue();
+                return;
+            }
+
             formField.isAcknowledged = true;
 
             resetTimer();
